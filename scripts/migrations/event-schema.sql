@@ -1,0 +1,16 @@
+-- Event Service Database
+
+CREATE DATABASE IF NOT EXISTS event_service;
+USE event_service;
+
+CREATE TABLE events (
+    id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    title VARCHAR(255) NOT NULL,
+    total_seats INT NOT NULL CHECK (total_seats > 0),
+    available_seats INT NOT NULL CHECK (available_seats >= 0),
+    date DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_date (date),
+    CONSTRAINT chk_seats CHECK (available_seats <= total_seats)
+);

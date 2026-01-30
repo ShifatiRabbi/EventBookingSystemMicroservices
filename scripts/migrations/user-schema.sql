@@ -1,0 +1,13 @@
+-- User Service Database
+
+CREATE DATABASE IF NOT EXISTS user_service;
+USE user_service;
+
+CREATE TABLE users (
+    id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_email (email)
+);
