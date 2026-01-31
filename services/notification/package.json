@@ -1,10 +1,10 @@
 {
-  "name": "user",
+  "name": "notification",
   "version": "1.0.0",
   "description": "",
   "main": "app.ts",
   "scripts": {
-    "migrate:user": "mysql -u root -p user_service < ../../scripts/migrations/user-schema.sql",
+    "migrate:user": "mysql -u root -p notification_service < ../../scripts/migrations/notification-schema.sql",
     "build": "tsc",
     "start": "node dist/app.js"
   },
