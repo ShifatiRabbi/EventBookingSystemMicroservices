@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: event-service
+  template:
+    metadata:
+      labels:
+        app: event-service
+    spec:
+      containers:
+        - name: event-service
+          image: eventbookingsystem-event-service
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PORT
+              value: "3002"
+            - name: DB_HOST
+              value: event-db
+            - name: DB_USER
+              value: root
+            - name: DB_PASSWORD
+              value: root
+            - name: DB_NAME
+              value: event_service
+          ports:
+            - containerPort: 3002

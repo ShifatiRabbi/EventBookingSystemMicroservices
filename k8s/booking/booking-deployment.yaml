@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: booking-service
+  template:
+    metadata:
+      labels:
+        app: booking-service
+    spec:
+      containers:
+        - name: booking-service
+          image: eventbookingsystem-booking-service
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PORT
+              value: "3003"
+            - name: DB_HOST
+              value: booking-db
+            - name: DB_USER
+              value: root
+            - name: DB_PASSWORD
+              value: root
+            - name: DB_NAME
+              value: booking_service
+          ports:
+            - containerPort: 3003

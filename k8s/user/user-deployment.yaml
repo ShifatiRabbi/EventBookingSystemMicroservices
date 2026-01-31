@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: eventbookingsystem-user-service
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PORT
+              value: "3001"
+            - name: DB_HOST
+              value: user-db
+            - name: DB_USER
+              value: root
+            - name: DB_PASSWORD
+              value: root
+            - name: DB_NAME
+              value: user_service
+          ports:
+            - containerPort: 3001
