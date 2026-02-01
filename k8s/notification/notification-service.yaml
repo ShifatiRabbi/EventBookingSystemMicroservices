@@ -3,10 +3,9 @@ kind: Service
 metadata:
   name: notification-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: notification-service
   ports:
     - port: 3004
       targetPort: 3004
-      nodePort: 30004

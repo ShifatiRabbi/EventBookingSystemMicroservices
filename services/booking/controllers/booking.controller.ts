@@ -60,3 +60,54 @@ export const createBooking = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Booking failed" });
   }
 };
+
+
+export const getAllBookingData = async (req: Request, res: Response) => {
+  const requestId = (req as any).requestId;
+
+  try {
+    const bookings = await BookingModel.findAll();
+
+    logger.info("Fetched all bookings", {
+      requestId,
+      count: bookings.length,
+    });
+
+    res.status(200).json({ bookings });
+  } catch (error: any) {
+    logger.error("Failed to fetch bookings", {
+      requestId,
+      error: error.message,
+    });
+
+    res.status(500).json({ error: "Failed to fetch bookings" });
+  }
+};
+
+export const getSingleBookingData = async (req: Request, res: Response) => {
+  const { bookingId } = req.params;
+  const requestId = (req as any).requestId;
+
+  try {
+    const booking = await BookingModel.findByBookingId(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    logger.info("Fetched booking", {
+      requestId,
+      bookingId,
+    });
+
+    res.status(200).json({ booking });
+  } catch (error: any) {
+    logger.error("Failed to fetch booking", {
+      requestId,
+      bookingId,
+      error: error.message,
+    });
+
+    res.status(500).json({ error: "Failed to fetch booking" });
+  }
+};

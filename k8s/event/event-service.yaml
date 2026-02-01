@@ -3,10 +3,9 @@ kind: Service
 metadata:
   name: event-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: event-service
   ports:
     - port: 3002
       targetPort: 3002
-      nodePort: 30002

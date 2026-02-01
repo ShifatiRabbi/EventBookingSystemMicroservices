@@ -3,10 +3,9 @@ kind: Service
 metadata:
   name: booking-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: booking-service
   ports:
     - port: 3003
       targetPort: 3003
-      nodePort: 30003

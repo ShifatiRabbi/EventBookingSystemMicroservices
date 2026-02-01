@@ -61,8 +61,19 @@ const updateEventById = async (
   return getEventById(id);
 };
 
+const getAllEvents = async (): Promise<Event[]> => {
+  const [rows] = await dbPool.execute<Event[]>(
+    `SELECT *
+     FROM events
+     ORDER BY date ASC`
+  );
+
+  return rows;
+};
+
 export default {
   createEvent,
   getEventById,
   updateEventById,
+  getAllEvents
 };

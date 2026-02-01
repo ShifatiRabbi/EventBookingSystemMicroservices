@@ -7,6 +7,28 @@ interface EventParams {
   id: string;
 }
 
+export const getAllEventData = async (req: Request, res: Response) => {
+  const requestId = (req as any).requestId;
+
+  try {
+    const events = await EventModel.getAllEvents();
+
+    logger.info("Fetched all events", {
+      requestId,
+      count: events.length,
+    });
+
+    res.status(200).json({ events });
+  } catch (error: any) {
+    logger.error("Error fetching events", {
+      requestId,
+      error: error.message,
+    });
+
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 export const createNewEvent = async (req: Request, res: Response) => {
   const { title, totalSeats, date } = req.body;
   const requestId = (req as any).requestId;

@@ -89,7 +89,18 @@ const findByBookingId = async (
   return rows.length ? rows[0] : null;
 };
 
+const findAll = async (): Promise<Booking[]> => {
+  const [rows] = await dbPool.execute<Booking[]>(
+    `SELECT *
+     FROM bookings
+     ORDER BY created_at DESC`
+  );
+
+  return rows;
+};
+
 export default {
   bookSeatsAtomic,
   findByBookingId,
+  findAll
 };
