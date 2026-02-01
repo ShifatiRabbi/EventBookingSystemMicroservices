@@ -1,7 +1,7 @@
 import express from 'express';
 // import { createClient } from 'redis';
 import { v4 as uuidv4 } from 'uuid';
-import userRoute from './routes/user.route'
+import notificationRoute from './routes/notification.route'
 import readyHealth from './routes/ready-health.route'
 import config from './config/config'
 import logger from "./logs/logger";
@@ -19,7 +19,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use("/api/users", userRoute);
+app.use("/api/notifications", notificationRoute);
 app.use("/", readyHealth);
 
 // Handle routes error
@@ -30,6 +30,6 @@ app.use((req, res, next) => {
 });
 
 app.listen(config.app.port, () => {
-    logger.info(`User service running on port ${config.app.port}`);
-    console.log(`User server running on port http://localhost:${config.app.port}`);
+    logger.info(`notification service running on port ${config.app.port}`);
+    console.log(`notification server running on port http://localhost:${config.app.port}`);
 });

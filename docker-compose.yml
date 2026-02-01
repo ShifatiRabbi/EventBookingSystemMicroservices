@@ -150,6 +150,8 @@ services:
       - "3004:3004"
     env_file:
       - ./services/notification/.env
+    environment:
+    - KAFKA_BROKERS=kafka:9092
     depends_on:
       kafka:
         condition: service_started

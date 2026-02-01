@@ -27,5 +27,13 @@ spec:
               value: root
             - name: DB_NAME
               value: notification_service
+            - name: DATABASE_URL
+              value: mysql://root:root@notification-db:3306/notification_service
+            - name: KAFKA_BROKERS
+              value: kafka:9092
+            - name: KAFKA_CLIENT_ID
+              value: notification-service
+            - name: KAFKA_GROUP_ID
+              value: notification-group
           ports:
             - containerPort: 3004
