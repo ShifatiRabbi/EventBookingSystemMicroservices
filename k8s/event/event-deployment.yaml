@@ -27,5 +27,9 @@ spec:
               value: root
             - name: DB_NAME
               value: event_service
+            - name: DATABASE_URL
+              value: mysql://root:root@event-db:3306/event_service
+            - name: REDIS_URL
+              value: redis://redis:6379
           ports:
             - containerPort: 3002

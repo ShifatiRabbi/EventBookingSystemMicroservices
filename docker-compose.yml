@@ -88,6 +88,8 @@ services:
       - "3002:3002"
     env_file:
       - ./services/event/.env
+    environment:
+      - REDIS_URL=redis://redis:6379
     depends_on:
       event-db:
         condition: service_healthy
