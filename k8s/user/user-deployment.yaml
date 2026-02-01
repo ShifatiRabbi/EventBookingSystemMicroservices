@@ -27,5 +27,7 @@ spec:
               value: root
             - name: DB_NAME
               value: user_service
+            - name: DATABASE_URL
+              value: mysql://root:root@user-db:3306/user_service
           ports:
             - containerPort: 3001
