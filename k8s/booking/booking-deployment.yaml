@@ -27,5 +27,9 @@ spec:
               value: root
             - name: DB_NAME
               value: booking_service
+            - name: DATABASE_URL
+              value: mysql://root:root@booking-db:3306/booking_service
+            - name: KAFKA_BROKERS
+              value: kafka:9092
           ports:
             - containerPort: 3003

@@ -9,6 +9,6 @@ COPY . .
 
 RUN npm run build
 
-EXPOSE 3000
+EXPOSE 3003
 
 CMD ["node", "dist/app.js"]

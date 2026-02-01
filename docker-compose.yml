@@ -119,6 +119,8 @@ services:
       - "3003:3003"
     env_file:
       - ./services/booking/.env
+    environment:
+    - KAFKA_BROKERS=kafka:9092
     depends_on:
       booking-db:
         condition: service_healthy
