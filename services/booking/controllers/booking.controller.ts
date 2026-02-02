@@ -69,7 +69,7 @@ export const createBooking = async (req: Request, res: Response) => {
 
     // after booking is created
     try {
-      publishBookingConfirmed(booking);
+      await publishBookingConfirmed(booking);
     } catch (err) {
       logger.error("Kafka publish failed", {
         bookingId: booking.booking_id,
