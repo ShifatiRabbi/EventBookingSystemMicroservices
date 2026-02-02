@@ -24,31 +24,6 @@ const bookSeatsAtomic = async (data: {
   try {
     await connection.beginTransaction();
 
-    // Lock event row
-    const [events]: any = await connection.execute(
-      "SELECT available_seats FROM events WHERE id = ? FOR UPDATE",
-      [data.eventId]
-    );
-
-    if (!events.length) {
-      throw new Error("Event not found");
-    }
-
-    if (events[0].available_seats < data.seatCount) {
-      throw new Error("Not enough seats available");
-    }
-
-    const [updateResult]: any = await connection.execute(
-      `UPDATE events 
-       SET available_seats = available_seats - ?
-       WHERE id = ? AND available_seats >= ?`,
-      [data.seatCount, data.eventId, data.seatCount]
-    );
-
-    if (updateResult.affectedRows === 0) {
-      throw new Error("Concurrent booking conflict");
-    }
-
     await connection.execute(
       `INSERT INTO bookings 
        (id, booking_id, event_id, user_id, seat_count, status)

@@ -1,8 +1,23 @@
 import { Request, Response } from "express";
+import axios from "axios";
 import BookingModel from "../models/booking.model";
 import { publishBookingConfirmed } from "../kafka/booking.producer";
 import { v4 as uuidv4 } from "uuid";
 import logger from "../logs/logger";
+
+// fetch event data from event service
+async function fetchEvent(eventId: string) {
+  try {
+    const response = await axios.get(`http://event-service:3002/api/events/${eventId}`);
+    return response.data.event;
+  } catch (error: any) {
+    logger.error("Failed to fetch event from event service", {
+      eventId,
+      error: error.message,
+    });
+    throw new Error("Event service unreachable or event not found");
+  }
+}
 
 export const createBooking = async (req: Request, res: Response) => {
   const { eventId, userId, seatCount, idempotencyKey } = req.body;
@@ -16,6 +31,17 @@ export const createBooking = async (req: Request, res: Response) => {
   });
 
   try {
+    // Fetch event
+    const event = await fetchEvent(eventId);
+
+    if (!event) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+
+    if (event.available_seats < seatCount) {
+      return res.status(409).json({ error: "Not enough seats available" });
+    }
+
     const bookingId = idempotencyKey || uuidv4();
 
     // Idempotency check
@@ -27,6 +53,13 @@ export const createBooking = async (req: Request, res: Response) => {
       });
     }
 
+    // Reserve seats via Event Service
+    await axios.post(
+      `http://event-service:3002/api/events/${eventId}/reserve`,
+      { seatCount }
+    );
+
+    // Create booking
     const booking = await BookingModel.bookSeatsAtomic({
       eventId,
       userId,
@@ -34,11 +67,22 @@ export const createBooking = async (req: Request, res: Response) => {
       bookingId,
     });
 
-    await publishBookingConfirmed(booking);
+    // after booking is created
+    try {
+      publishBookingConfirmed(booking);
+    } catch (err) {
+      logger.error("Kafka publish failed", {
+        bookingId: booking.booking_id,
+        error: (err as any).message,
+      });
+    }
+
+    res.status(201).json({ booking });
+
 
     logger.info("Booking confirmed", {
       requestId,
-      bookingId: booking.booking_id,
+      bookingId,
     });
 
     res.status(201).json({ booking });
@@ -46,15 +90,10 @@ export const createBooking = async (req: Request, res: Response) => {
     logger.error("Booking failed", {
       requestId,
       error: error.message,
-      eventId,
-      userId,
     });
 
-    if (
-      error.message.includes("Not enough seats") ||
-      error.message.includes("Concurrent")
-    ) {
-      return res.status(409).json({ error: error.message });
+    if (error.response?.status === 409) {
+      return res.status(409).json({ error: "Seat reservation failed" });
     }
 
     res.status(500).json({ error: "Booking failed" });

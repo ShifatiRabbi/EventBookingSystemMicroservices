@@ -3,7 +3,8 @@ import {
   createNewEvent,
   getEventData,
   updateEvent,
-  getAllEventData
+  getAllEventData,
+  reserveEventSeats
 } from "./../controllers/event.controller";
 import { cacheController } from "../controllers/cache.controller";
 
@@ -13,5 +14,6 @@ router.post("/", createNewEvent);
 router.get("/", getAllEventData);
 router.get("/:id", cacheController("event", 30), getEventData);
 router.put("/:id", updateEvent);
+router.post("/:id/reserve", reserveEventSeats);
 
 export default router;

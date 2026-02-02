@@ -19,7 +19,7 @@ const createEvent = async (
   await dbPool.execute<ResultSetHeader>(
     `INSERT INTO events 
      (id, title, total_seats, available_seats, date)
-     VALUES (UUID(), ?, ?, ?, ?, ?)`,
+     VALUES (UUID(), ?, ?, ?, ?)`,
     [title, totalSeats, totalSeats, date]
   );
 
@@ -71,9 +71,62 @@ const getAllEvents = async (): Promise<Event[]> => {
   return rows;
 };
 
+const reserveSeatsAtomic = async (
+  eventId: string,
+  seatCount: number
+): Promise<Event> => {
+  const connection = await dbPool.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    const [rows]: any = await connection.execute(
+      `SELECT available_seats 
+       FROM events 
+       WHERE id = ? 
+       FOR UPDATE`,
+      [eventId]
+    );
+
+    if (!rows.length) {
+      throw new Error("Event not found");
+    }
+
+    if (rows[0].available_seats < seatCount) {
+      throw new Error("Not enough seats");
+    }
+
+    const [result]: any = await connection.execute(
+      `UPDATE events
+       SET available_seats = available_seats - ?
+       WHERE id = ?`,
+      [seatCount, eventId]
+    );
+
+    if (result.affectedRows === 0) {
+      throw new Error("Seat reservation failed");
+    }
+
+    await connection.commit();
+
+    const [updated] = await connection.execute<Event[]>(
+      `SELECT * FROM events WHERE id = ?`,
+      [eventId]
+    );
+
+    return updated[0];
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
 export default {
   createEvent,
   getEventById,
   updateEventById,
-  getAllEvents
+  getAllEvents,
+  reserveSeatsAtomic
 };

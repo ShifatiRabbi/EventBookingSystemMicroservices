@@ -110,3 +110,39 @@ export const updateEvent = async (
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const reserveEventSeats = async (
+  req: Request<EventParams>,
+  res: Response
+) => {
+  const { id } = req.params;
+  const { seatCount } = req.body;
+  const requestId = (req as any).requestId;
+
+  logger.info("Reserving seats", {
+    requestId,
+    eventId: id,
+    seatCount,
+  });
+
+  try {
+    const event = await EventModel.reserveSeatsAtomic(id, seatCount);
+
+    res.status(200).json({ event });
+  } catch (error: any) {
+    logger.error("Seat reservation failed", {
+      requestId,
+      eventId: id,
+      error: error.message,
+    });
+
+    if (
+      error.message.includes("Not enough seats") ||
+      error.message.includes("not found")
+    ) {
+      return res.status(409).json({ error: error.message });
+    }
+
+    res.status(500).json({ error: "Seat reservation failed" });
+  }
+};
