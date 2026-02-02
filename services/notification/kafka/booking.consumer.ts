@@ -24,8 +24,9 @@ export const startBookingConsumer = async () => {
 
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
-      const messageId = message.offset;
-
+      const messageId =message.key?.toString() ??
+        `${topic}-${partition}-${message.offset}`;
+      
       try {
         if (!message.value) return;
 
@@ -53,9 +54,9 @@ export const startBookingConsumer = async () => {
 
         await NotificationModel.createNotification({
           messageId,
-          bookingId: data.bookingId,
-          userId: data.userId,
-          eventId: data.eventId,
+          bookingId: data.booking_id,
+          userId: data.user_id,
+          eventId: data.event_id,
           message: notificationMessage,
         });
 
@@ -67,8 +68,8 @@ export const startBookingConsumer = async () => {
         });
 
         // Just message show on console
-        await sendEmail(data.userId, notificationMessage);
-        await sendSMS(data.userId, notificationMessage);
+        await sendEmail(data.user_id, notificationMessage);
+        await sendSMS(data.user_id, notificationMessage);
       } catch (error: any) {
         logger.error("Message failed, sending to DLQ", {
           topic,

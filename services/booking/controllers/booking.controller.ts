@@ -78,14 +78,11 @@ export const createBooking = async (req: Request, res: Response) => {
     }
 
     res.status(201).json({ booking });
-
-
     logger.info("Booking confirmed", {
       requestId,
       bookingId,
     });
 
-    res.status(201).json({ booking });
   } catch (error: any) {
     logger.error("Booking failed", {
       requestId,

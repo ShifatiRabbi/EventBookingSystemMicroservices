@@ -5,7 +5,7 @@ import notificationRoute from './routes/notification.route'
 import readyHealth from './routes/ready-health.route'
 import config from './config/config'
 import logger from "./logs/logger";
-
+import { startBookingConsumer } from "./kafka/booking.consumer";
 
 const app = express();
 app.use(express.json());
@@ -29,7 +29,15 @@ app.use((req, res, next) => {
     });
 });
 
-app.listen(config.app.port, () => {
+app.listen(config.app.port, async () => {
     logger.info(`notification service running on port ${config.app.port}`);
     console.log(`notification server running on port http://localhost:${config.app.port}`);
+    try {
+        await startBookingConsumer();
+        logger.info("Kafka consumer started");
+    } catch (err: any) {
+        logger.error("Failed to start Kafka consumer", {
+        error: err.message,
+        });
+    }
 });

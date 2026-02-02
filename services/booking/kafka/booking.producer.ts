@@ -1,12 +1,22 @@
 import kafka from "./kafka.client";
 
 const producer = kafka.producer();
+let isConnected = false;
 
-export const connectProducer = async () => {
-  await producer.connect();
+export const getProducer = async () => {
+  if (!isConnected) {
+    await producer.connect();
+    isConnected = true;
+  }
+  return producer;
 };
 
 export const publishBookingConfirmed = async (booking: any) => {
+  if (!isConnected) {
+    await producer.connect();
+    isConnected = true;
+  }
+  
   await producer.send({
     topic: "booking.confirmed",
     messages: [

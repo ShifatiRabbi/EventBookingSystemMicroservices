@@ -42,11 +42,11 @@ const createNotification = async (data: {
 };
 
 const getLatestNotifications = async (limit = 100) => {
+  const safeLimit = Number(limit);
   const [rows] = await dbPool.execute<Notification[]>(
     `SELECT * FROM notifications 
      ORDER BY created_at DESC 
-     LIMIT ?`,
-    [limit]
+     LIMIT ${safeLimit}`
   );
 
   return rows;
