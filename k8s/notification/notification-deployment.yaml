@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+        - name: notification-service
+          image: eventbookingsystem-notification-service
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PORT
+              value: "3004"
+            - name: DB_HOST
+              value: notification-db
+            - name: DB_USER
+              value: root
+            - name: DB_PASSWORD
+              value: root
+            - name: DB_NAME
+              value: notification_service
+            - name: DATABASE_URL
+              value: mysql://root:root@notification-db:3306/notification_service
+            - name: KAFKA_BROKERS
+              value: kafka:9092
+            - name: KAFKA_CLIENT_ID
+              value: notification-service
+            - name: KAFKA_GROUP_ID
+              value: notification-group
+          ports:
+            - containerPort: 3004

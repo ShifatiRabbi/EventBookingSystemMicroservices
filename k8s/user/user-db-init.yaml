@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-db-init
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS user_service;
+    USE user_service;
+
+    CREATE TABLE users (
+      id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
+      name VARCHAR(191) NOT NULL,
+      email VARCHAR(191) UNIQUE NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      INDEX idx_email (email)
+    );
