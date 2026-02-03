@@ -4,7 +4,8 @@ import {
   getEventData,
   updateEvent,
   getAllEventData,
-  reserveEventSeats
+  reserveEventSeats,
+  releaseEventSeats
 } from "./../controllers/event.controller";
 import { cacheController } from "../controllers/cache.controller";
 
@@ -15,5 +16,6 @@ router.get("/", getAllEventData);
 router.get("/:id", cacheController("event", 30), getEventData);
 router.put("/:id", updateEvent);
 router.post("/:id/reserve", reserveEventSeats);
+router.post("/:id/release", releaseEventSeats);
 
 export default router;

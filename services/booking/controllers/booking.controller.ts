@@ -59,13 +59,23 @@ export const createBooking = async (req: Request, res: Response) => {
       { seatCount }
     );
 
-    // Create booking
-    const booking = await BookingModel.bookSeatsAtomic({
-      eventId,
-      userId,
-      seatCount,
-      bookingId,
-    });
+    let booking;
+
+    try {
+      booking = await BookingModel.bookSeatsAtomic({
+        eventId,
+        userId,
+        seatCount,
+        bookingId,
+      });
+    } catch (err) {
+      // COMPENSATION
+      await axios.post(
+        `http://event-service:3002/api/events/${eventId}/release`,
+        { seatCount }
+      );
+      throw err;
+    }
 
     // after booking is created
     try {

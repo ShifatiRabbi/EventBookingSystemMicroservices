@@ -15,3 +15,17 @@ CREATE TABLE bookings (
     INDEX idx_event_user (event_id, user_id),
     INDEX idx_booking_id (booking_id)
 );
+
+CREATE TABLE booking_outbox (
+  id CHAR(36) PRIMARY KEY,
+  aggregate_id CHAR(36) NOT NULL,
+  event_type VARCHAR(100) NOT NULL,
+  payload JSON NOT NULL,
+  status ENUM('pending','published','failed') DEFAULT 'pending',
+  retries INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  published_at TIMESTAMP NULL
+);
+
+CREATE INDEX idx_outbox_status_created
+ON booking_outbox (status, created_at);

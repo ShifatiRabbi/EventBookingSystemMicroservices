@@ -1,9 +1,20 @@
 import kafka from "./kafka.client";
+import { v4 as uuidv4 } from "uuid";
+export interface BookingConfirmedEventV1 {
+  eventType: "booking.confirmed";
+  version: 1;
+  messageId: string;
+  bookingId: string;
+  eventId: string;
+  userId: string;
+  seatCount: number;
+  timestamp: string;
+}
 
 const producer = kafka.producer();
 let isConnected = false;
 
-export const getProducer = async () => {
+const getProducer = async () => {
   if (!isConnected) {
     await producer.connect();
     isConnected = true;
@@ -12,22 +23,25 @@ export const getProducer = async () => {
 };
 
 export const publishBookingConfirmed = async (booking: any) => {
-  if (!isConnected) {
-    await producer.connect();
-    isConnected = true;
-  }
-  
+  const producer = await getProducer();
+
+  const event: BookingConfirmedEventV1 = {
+    eventType: "booking.confirmed",
+    version: 1,
+    messageId: uuidv4(),
+    bookingId: booking.booking_id,
+    eventId: booking.event_id,
+    userId: booking.user_id,
+    seatCount: booking.seat_count,
+    timestamp: new Date().toISOString(),
+  };
+
   await producer.send({
     topic: "booking.confirmed",
     messages: [
       {
-        key: booking.booking_id,
-        value: JSON.stringify({
-          event: "booking.confirmed",
-          version: "1.0",
-          timestamp: new Date().toISOString(),
-          data: booking,
-        }),
+        key: event.bookingId,
+        value: JSON.stringify(event),
       },
     ],
   });

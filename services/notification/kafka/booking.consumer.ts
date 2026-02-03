@@ -1,8 +1,19 @@
 import kafka from "./kafka.client";
 import NotificationModel from "../models/notification.model";
 import logger from "../logs/logger";
-import { sendEmail, sendSMS } from "./../adapters";
+import { sendEmail, sendSMS } from "../adapters";
 import { sendToDLQ } from "./dlq.producer";
+
+interface BookingConfirmedEventV1 {
+  eventType: "booking.confirmed";
+  version: 1;
+  messageId: string;
+  bookingId: string;
+  eventId: string;
+  userId: string;
+  seatCount: number;
+  timestamp: string;
+}
 
 const consumer = kafka.consumer({
   groupId: "notification-group",
@@ -16,47 +27,54 @@ export const startBookingConsumer = async () => {
     fromBeginning: false,
   });
 
-  await consumer.subscribe({
-    topic: "booking.cancelled",
-    fromBeginning: false,
+  logger.info("Notification consumer started", {
+    topics: ["booking.confirmed"],
   });
-
 
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
-      const messageId =message.key?.toString() ??
-        `${topic}-${partition}-${message.offset}`;
-      
       try {
         if (!message.value) return;
 
-        const event = JSON.parse(message.value.toString());
-        const { data, event: eventType } = event;
+        const raw = message.value.toString();
+        const event: BookingConfirmedEventV1 = JSON.parse(raw);
 
-        let notificationMessage = "";
+        // Schema validation (minimal but effective)
+        if (
+          event.version !== 1 ||
+          event.eventType !== "booking.confirmed" ||
+          !event.messageId
+        ) {
+          throw new Error("Invalid or unsupported event schema");
+        }
 
-        // Idempotency check
+        const {
+          messageId,
+          bookingId,
+          eventId,
+          userId,
+          seatCount,
+        } = event;
+
+        // Idempotency check (at-least-once safe)
         const exists = await NotificationModel.existsByMessageId(messageId);
         if (exists) {
-          logger.info("Duplicate message skipped", { messageId });
+          logger.info("Duplicate event skipped", {
+            topic,
+            messageId,
+          });
           return;
         }
 
-        if (eventType === "booking.confirmed") {
-          notificationMessage =
-            `Booking confirmed for ${data.seatCount} seat(s) at event ${data.eventId}`;
-        }
+        const notificationMessage =
+          `Booking confirmed for ${seatCount} seat(s) at event ${eventId}`;
 
-        if (eventType === "booking.cancelled") {
-          notificationMessage =
-            `Booking cancelled for event ${data.eventId}`;
-        }
-
+        // Persist notification
         await NotificationModel.createNotification({
           messageId,
-          bookingId: data.booking_id,
-          userId: data.user_id,
-          eventId: data.event_id,
+          bookingId,
+          userId,
+          eventId,
           message: notificationMessage,
         });
 
@@ -64,20 +82,28 @@ export const startBookingConsumer = async () => {
           topic,
           partition,
           messageId,
-          bookingId: data.bookingId,
+          bookingId,
+          version: event.version,
         });
 
-        // Just message show on console
-        await sendEmail(data.user_id, notificationMessage);
-        await sendSMS(data.user_id, notificationMessage);
+        // Side effects (best-effort)
+        await Promise.all([
+          sendEmail(userId, notificationMessage),
+          sendSMS(userId, notificationMessage),
+        ]);
       } catch (error: any) {
-        logger.error("Message failed, sending to DLQ", {
+        logger.error("Message processing failed, sending to DLQ", {
           topic,
+          partition,
           offset: message.offset,
           error: error.message,
         });
 
-        await sendToDLQ(topic, message.value?.toString(), error.message);
+        await sendToDLQ(
+          topic,
+          message.value?.toString(),
+          error.message
+        );
       }
     },
   });

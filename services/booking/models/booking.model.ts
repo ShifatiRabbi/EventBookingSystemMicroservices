@@ -74,8 +74,34 @@ const findAll = async (): Promise<Booking[]> => {
   return rows;
 };
 
+const insertOutboxEvent = async (
+  connection: any,
+  booking: Booking
+) => {
+  await connection.execute(
+    `INSERT INTO booking_outbox 
+     (id, aggregate_id, event_type, payload)
+     VALUES (UUID(), ?, ?, ?)`,
+    [
+      booking.booking_id,
+      "booking.confirmed",
+      JSON.stringify({
+        eventType: "booking.confirmed",
+        version: 1,
+        messageId: booking.booking_id,
+        bookingId: booking.booking_id,
+        eventId: booking.event_id,
+        userId: booking.user_id,
+        seatCount: booking.seat_count,
+        timestamp: new Date().toISOString(),
+      }),
+    ]
+  );
+};
+
 export default {
   bookSeatsAtomic,
   findByBookingId,
+  insertOutboxEvent,
   findAll
 };

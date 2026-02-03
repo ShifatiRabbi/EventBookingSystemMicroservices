@@ -14,8 +14,9 @@ export const sendToDLQ = async (
     messages: [
       {
         value: JSON.stringify({
-          originalMessage: message,
+          originalEvent: message,
           error,
+          version: 1,
           failedAt: new Date().toISOString(),
         }),
       },

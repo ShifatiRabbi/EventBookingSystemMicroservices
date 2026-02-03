@@ -158,3 +158,19 @@ services:
       notification-db:
         condition: service_healthy
     networks: [event-net]
+
+  # ------------------------
+  # CONSISTENCY CHECK
+  # ------------------------
+
+  consistency-check:
+    image: node:18
+    volumes:
+      - ./scripts/load-test:/app
+    working_dir: /app
+    command: node validate-consistency.js
+    depends_on:
+      - booking-db
+      - event-db
+    networks:
+      - event-net

@@ -4,7 +4,9 @@
   "description": "",
   "main": "booking-concurrency.js",
   "scripts": {
-    "load": "node booking.loadtest.js"
+    "load": "node booking.loadtest.js",
+    "validate": "node validate-consistency.js",
+    "test:full": "npm run load && npm run validate"
   },
   "keywords": [],
   "author": "",
@@ -12,6 +14,8 @@
   "type": "commonjs",
   "dependencies": {
     "autocannon": "^8.0.0",
+    "axios": "^1.13.4",
+    "mysql2": "^3.16.2",
     "uuid": "^13.0.0"
   }
 }

@@ -127,8 +127,8 @@ export const reserveEventSeats = async (
 
   try {
     const event = await EventModel.reserveSeatsAtomic(id, seatCount);
-
     res.status(200).json({ event });
+    await redisClient.del(`event:${id}`);
   } catch (error: any) {
     logger.error("Seat reservation failed", {
       requestId,
@@ -144,5 +144,29 @@ export const reserveEventSeats = async (
     }
 
     res.status(500).json({ error: "Seat reservation failed" });
+  }
+};
+
+export const releaseEventSeats = async (
+  req: Request<EventParams>,
+  res: Response
+) => {
+  const { id } = req.params;
+  const { seatCount } = req.body;
+
+  try {
+    const event = await EventModel.releaseSeatsAtomic(id, seatCount);
+
+    // cache invalidation
+    await redisClient.del(`event:${id}`);
+
+    res.status(200).json({ event });
+  } catch (error: any) {
+    logger.error("Seat release failed", {
+      eventId: id,
+      error: error.message,
+    });
+
+    res.status(500).json({ error: "Seat release failed" });
   }
 };

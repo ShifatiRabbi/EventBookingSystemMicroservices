@@ -123,10 +123,47 @@ const reserveSeatsAtomic = async (
   }
 };
 
+const releaseSeatsAtomic = async (
+  eventId: string,
+  seatCount: number
+): Promise<Event> => {
+  const connection = await dbPool.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    const [result]: any = await connection.execute(
+      `UPDATE events
+       SET available_seats = available_seats + ?
+       WHERE id = ?`,
+      [seatCount, eventId]
+    );
+
+    if (result.affectedRows === 0) {
+      throw new Error("Event not found");
+    }
+
+    await connection.commit();
+
+    const [rows] = await connection.execute<Event[]>(
+      "SELECT * FROM events WHERE id = ?",
+      [eventId]
+    );
+
+    return rows[0];
+  } catch (err) {
+    await connection.rollback();
+    throw err;
+  } finally {
+    connection.release();
+  }
+};
+
 export default {
   createEvent,
   getEventById,
   updateEventById,
   getAllEvents,
-  reserveSeatsAtomic
+  reserveSeatsAtomic,
+  releaseSeatsAtomic,
 };
