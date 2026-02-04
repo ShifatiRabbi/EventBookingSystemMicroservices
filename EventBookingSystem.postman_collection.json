@@ -1,0 +1,466 @@
+{
+  "info": {
+    "_postman_id": "4d315f8f-8f95-4868-8a18-2d7719b844e6",
+    "name": "EventBookingSystem",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51799810",
+    "_collection_link": "https://go.postman.co/collection/51799810-4d315f8f-8f95-4868-8a18-2d7719b844e6?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "user-api",
+      "item": [
+        {
+          "name": "get-all-user-data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://event.127.0.0.1.nip.io/api/users/",
+              "protocol": "http",
+              "host": [
+                "event",
+                "127",
+                "0",
+                "0",
+                "1",
+                "nip",
+                "io"
+              ],
+              "path": [
+                "api",
+                "users",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-single-user-data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://event.127.0.0.1.nip.io/api/users/520543a1-ffe3-11f0-8fc7-3646b90be698",
+              "protocol": "http",
+              "host": [
+                "event",
+                "127",
+                "0",
+                "0",
+                "1",
+                "nip",
+                "io"
+              ],
+              "path": [
+                "api",
+                "users",
+                "520543a1-ffe3-11f0-8fc7-3646b90be698"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create-new-user",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"test\",\r\n  \"email\": \"test@gmail.com\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://event.127.0.0.1.nip.io/api/users/",
+              "protocol": "http",
+              "host": [
+                "event",
+                "127",
+                "0",
+                "0",
+                "1",
+                "nip",
+                "io"
+              ],
+              "path": [
+                "api",
+                "users",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "booking-api",
+      "item": [
+        {
+          "name": "get-all-booking-data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://event.127.0.0.1.nip.io/api/bookings/",
+              "protocol": "http",
+              "host": [
+                "event",
+                "127",
+                "0",
+                "0",
+                "1",
+                "nip",
+                "io"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-single-booking-data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://event.127.0.0.1.nip.io/api/bookings/97f7510c-0175-11f1-b5af-2ec1e1c672af",
+              "protocol": "http",
+              "host": [
+                "event",
+                "127",
+                "0",
+                "0",
+                "1",
+                "nip",
+                "io"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "97f7510c-0175-11f1-b5af-2ec1e1c672af"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create-new-booking",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"eventId\": \"97f7510c-0175-11f1-b5af-2ec1e1c672af\",\r\n  \"userId\": \"94e5fdad-0175-11f1-b94f-1aec8bceacdb\",\r\n  \"seatCount\": 1,\r\n  \"idempotencyKey\": \"booking-011-user-test\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://event.127.0.0.1.nip.io/api/bookings/",
+              "protocol": "http",
+              "host": [
+                "event",
+                "127",
+                "0",
+                "0",
+                "1",
+                "nip",
+                "io"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "event-api",
+      "item": [
+        {
+          "name": "get-all-event-data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://event.127.0.0.1.nip.io/api/events/",
+              "protocol": "http",
+              "host": [
+                "event",
+                "127",
+                "0",
+                "0",
+                "1",
+                "nip",
+                "io"
+              ],
+              "path": [
+                "api",
+                "events",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-single-event-data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://event.127.0.0.1.nip.io/api/events/97f7510c-0175-11f1-b5af-2ec1e1c672af",
+              "protocol": "http",
+              "host": [
+                "event",
+                "127",
+                "0",
+                "0",
+                "1",
+                "nip",
+                "io"
+              ],
+              "path": [
+                "api",
+                "events",
+                "97f7510c-0175-11f1-b5af-2ec1e1c672af"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update-single-event-data",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Rock Concert 2026 - Updated\",\r\n  \"total_seats\": 120\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://event.127.0.0.1.nip.io/api/events/0085eefb-ff93-11f0-9c06-0242ac120003",
+              "protocol": "http",
+              "host": [
+                "event",
+                "127",
+                "0",
+                "0",
+                "1",
+                "nip",
+                "io"
+              ],
+              "path": [
+                "api",
+                "events",
+                "0085eefb-ff93-11f0-9c06-0242ac120003"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create-new-event",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Test Concert 2026\",\r\n  \"totalSeats\": 100,\r\n  \"date\": \"2026-05-20 18:00:00\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://event.127.0.0.1.nip.io/api/events/",
+              "protocol": "http",
+              "host": [
+                "event",
+                "127",
+                "0",
+                "0",
+                "1",
+                "nip",
+                "io"
+              ],
+              "path": [
+                "api",
+                "events",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "notification-api",
+      "item": [
+        {
+          "name": "get-all-notifications-data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://event.127.0.0.1.nip.io/api/notifications/",
+              "protocol": "http",
+              "host": [
+                "event",
+                "127",
+                "0",
+                "0",
+                "1",
+                "nip",
+                "io"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-single-notifications-data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://event.127.0.0.1.nip.io/api/notifications/5fc1d6eb-fe53-11f0-8ccf-2cf05ddaf2d2",
+              "protocol": "http",
+              "host": [
+                "event",
+                "127",
+                "0",
+                "0",
+                "1",
+                "nip",
+                "io"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "5fc1d6eb-fe53-11f0-8ccf-2cf05ddaf2d2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create-notifications-user",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"messageId\": \"manual-test-001\",\r\n  \"bookingId\": \"booking-001-user-john-5\",\r\n  \"userId\": \"520543a1-ffe3-11f0-8fc7-3646b90be698\",\r\n  \"eventId\": \"a415ad8f-ffec-11f0-8877-9623423d1cea\",\r\n  \"message\": \"Your booking has been confirmed successfully!\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://event.127.0.0.1.nip.io/api/notifications/",
+              "protocol": "http",
+              "host": [
+                "event",
+                "127",
+                "0",
+                "0",
+                "1",
+                "nip",
+                "io"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://event.127.0.0.1.nip.io/api/notifications/health",
+          "protocol": "http",
+          "host": [
+            "event",
+            "127",
+            "0",
+            "0",
+            "1",
+            "nip",
+            "io"
+          ],
+          "path": [
+            "api",
+            "notifications",
+            "health"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ready",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://event.127.0.0.1.nip.io/api/notifications/ready",
+          "protocol": "http",
+          "host": [
+            "event",
+            "127",
+            "0",
+            "0",
+            "1",
+            "nip",
+            "io"
+          ],
+          "path": [
+            "api",
+            "notifications",
+            "ready"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -118,10 +118,6 @@ docker-compose ps
 docker-compose logs -f
 Service Ports
 Service	Port	Health Check
-User Service	8081	http://localhost:8081/health
-Event Service	8082	http://localhost:8082/health
-Booking Service	8083	http://localhost:8083/health
-Notification Service	8084	http://localhost:8084/health
 Redis	6379	redis-cli ping
 Kafka	9092	-
 MySQL	3306	-
