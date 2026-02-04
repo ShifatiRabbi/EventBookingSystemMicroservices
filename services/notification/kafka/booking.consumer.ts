@@ -20,14 +20,31 @@ const consumer = kafka.consumer({
 });
 
 export const startBookingConsumer = async () => {
-  await consumer.connect();
+  const maxRetries = 5;
+  let retryCount = 0;
 
-  await consumer.subscribe({
-    topic: "booking.confirmed",
-    fromBeginning: false,
-  });
+  while (retryCount < maxRetries) {
+    try {
+      await consumer.connect();
+      
+      await consumer.subscribe({
+        topic: "booking.confirmed",
+        fromBeginning: true,
+      });
 
-  logger.info("Notification consumer started", {
+      // If we reach here, subscription worked!
+      break; 
+    } catch (error: any) {
+      retryCount++;
+      logger.warn(`Kafka subscription attempt ${retryCount} failed. Retrying in 5s...`, {
+        error: error.message
+      });
+      await new Promise(res => setTimeout(res, 5000)); // Wait 5 seconds
+      if (retryCount === maxRetries) throw error;
+    }
+  }
+
+  logger.info("Notification consumer joined successfully", {
     topics: ["booking.confirmed"],
   });
 

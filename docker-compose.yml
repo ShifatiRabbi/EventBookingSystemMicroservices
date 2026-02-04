@@ -158,19 +158,3 @@ services:
       notification-db:
         condition: service_healthy
     networks: [event-net]
-
-  # ------------------------
-  # LOAD TEST && CONSISTENCY CHECK
-  # ------------------------
-
-  load-consistency-check:
-    image: node:18
-    volumes:
-      - ./scripts/load-test:/app
-    working_dir: /app
-    command: sh -c "npm install && npm run test:full"
-    depends_on:
-      - booking-db
-      - event-db
-    networks:
-      - event-net

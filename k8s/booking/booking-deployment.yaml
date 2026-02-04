@@ -33,3 +33,9 @@ spec:
               value: kafka:9092
           ports:
             - containerPort: 3003
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3003
+            initialDelaySeconds: 10
+            periodSeconds: 5

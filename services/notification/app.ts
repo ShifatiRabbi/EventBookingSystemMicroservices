@@ -19,7 +19,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use("/api/notifications", notificationRoute);
+app.use("/", notificationRoute);
+// app.use("/api/notifications", notificationRoute);
 app.use("/", readyHealth);
 
 // Handle routes error

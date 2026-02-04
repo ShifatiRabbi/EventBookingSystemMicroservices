@@ -3,10 +3,12 @@ kind: Service
 metadata:
   name: booking-db
 spec:
-  ports:
-    - port: 3306
+  clusterIP: None
   selector:
     app: booking-db
+  ports:
+    - port: 3306
+      targetPort: 3306
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -40,7 +42,10 @@ spec:
               mountPath: /docker-entrypoint-initdb.d
           readinessProbe:
             exec:
-              command: ["mysqladmin", "ping", "-h", "127.0.0.1"]
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -h 127.0.0.1 -uroot -proot
             initialDelaySeconds: 20
             periodSeconds: 5
       volumes:

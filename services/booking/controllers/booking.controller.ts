@@ -8,7 +8,7 @@ import logger from "../logs/logger";
 // fetch event data from event service
 async function fetchEvent(eventId: string) {
   try {
-    const response = await axios.get(`http://event-service:3002/api/events/${eventId}`);
+    const response = await axios.get(`http://event-service:3002/${eventId}`);
     return response.data.event;
   } catch (error: any) {
     logger.error("Failed to fetch event from event service", {
@@ -55,8 +55,11 @@ export const createBooking = async (req: Request, res: Response) => {
 
     // Reserve seats via Event Service
     await axios.post(
-      `http://event-service:3002/api/events/${eventId}/reserve`,
-      { seatCount }
+      `http://event-service:3002/${eventId}/reserve`, { seatCount }, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
     );
 
     let booking;
@@ -71,7 +74,7 @@ export const createBooking = async (req: Request, res: Response) => {
     } catch (err) {
       // COMPENSATION
       await axios.post(
-        `http://event-service:3002/api/events/${eventId}/release`,
+        `http://event-service:3002/${eventId}/release`,
         { seatCount }
       );
       throw err;
@@ -103,7 +106,7 @@ export const createBooking = async (req: Request, res: Response) => {
       return res.status(409).json({ error: "Seat reservation failed" });
     }
 
-    res.status(201).json({ error: "Booking Created !!!" });
+    res.status(500).json({ error: "Something Wrong !!! "+error.message });
   }
 };
 

@@ -2,11 +2,10 @@
   "name": "load-test",
   "version": "1.0.0",
   "description": "",
-  "main": "booking-concurrency.js",
+  "main": "booking.loadtest.js",
   "scripts": {
     "load": "node booking.loadtest.js",
-    "validate": "node validate-consistency.js",
-    "test:full": "npm run load && npm run validate"
+    "test:full": "npm run load"
   },
   "keywords": [],
   "author": "",

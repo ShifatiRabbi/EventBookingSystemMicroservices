@@ -19,8 +19,13 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use("/api/users", userRoute);
-app.use("/", readyHealth);
+// app.use("/api/users", userRoute);
+app.use("/", userRoute);
+// app.use("/", readyHealth);
+// health.route.js or similar
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
 
 // Handle routes error
 app.use((req, res, next) => {

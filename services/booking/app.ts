@@ -19,7 +19,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use("/api/bookings", bookingRoute);
+app.use("/", bookingRoute);
+// app.use("/api/bookings", bookingRoute);
 app.use("/", readyHealth);
 
 // Handle routes error

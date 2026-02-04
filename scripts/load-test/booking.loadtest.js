@@ -2,7 +2,7 @@ const autocannon = require('autocannon');
 const { randomBytes } = require('crypto');
 
 // ================== CONFIG ==================
-const BASE_URL = 'http://localhost:3003';
+const BASE_URL = 'http://event.127.0.0.1.nip.io';
 const BOOKING_ENDPOINT = '/api/bookings';
 
 const EVENT_ID = 'your-test-event-id'; // must exist

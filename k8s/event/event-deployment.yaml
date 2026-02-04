@@ -33,3 +33,4 @@ spec:
               value: redis://redis:6379
           ports:
             - containerPort: 3002
+        

@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: user-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: user-service
   ports:

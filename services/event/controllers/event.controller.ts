@@ -127,7 +127,7 @@ export const reserveEventSeats = async (
 
   try {
     const event = await EventModel.reserveSeatsAtomic(id, seatCount);
-    await redisClient.del(`event:${id}`);
+    // await redisClient.del(`event:${id}`);
     res.status(200).json({ event });
   } catch (error: any) {
     logger.error("Seat reservation failed", {

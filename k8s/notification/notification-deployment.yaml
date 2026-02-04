@@ -37,3 +37,9 @@ spec:
               value: notification-group
           ports:
             - containerPort: 3004
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3004
+            initialDelaySeconds: 10
+            periodSeconds: 5
